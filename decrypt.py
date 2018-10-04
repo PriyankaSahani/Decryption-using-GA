@@ -2,7 +2,7 @@ from __future__ import print_function
 import collections
 import re
 import random
-
+import matplotlib.pyplot as plt
 
 ##############################################################################
 # Program parameters
@@ -17,26 +17,26 @@ REFFILE = 'paradiso.txt'
 CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 # Size of the population to use for the genetic algorithm
-#POPULATION_SIZE = 50
+# POPULATION_SIZE = 50
 POPULATION_SIZE = 20
 
 # Size of the population slice of best peforming solutions to keep at each
 # iteration
-#TOP_POPULATION = 10
+# TOP_POPULATION = 10
 TOP_POPULATION = 10
 
 # Number of intervals for which the best score has to be stable before aborting
-# the genetic algorith
-#STABILITY_INTERVALS = 20
+# the genetic algorithm
+# STABILITY_INTERVALS = 20
 STABILITY_INTERVALS = 20
 
 # Number of crossovers to execute for each new child in the genetic algorithm
-#CROSSOVER_COUNT = 2
+# CROSSOVER_COUNT = 2
 CROSSOVER_COUNT = 2
 
 # Number of random mutation to introduce for each new child in the genetic
 # algorithm
-#MUTATIONS_COUNT = 1
+# MUTATIONS_COUNT = 1
 MUTATIONS_COUNT = 1
 
 
@@ -62,14 +62,14 @@ def bigram(text):
 
    return counter
 
-#sentence = "hello world this is me"
+# sentence = "hello world this is me"
 
-#words = sentence.split(' ')
-#words = ['hello', 'world,...]
+# words = sentence.split(' ')
+# words = ['hello', 'world,...]
 
-#for word in words:
+# for word in words:
 #	pairs = [word[i,i+3] for i in range(0,len(word)-2,1)]
-	
+
 
 """def triplet(word):
 	pairs = [word[i:i+3] for i in range(0,len(word)-2,1)]
@@ -84,6 +84,7 @@ def bigram(text):
             counter[pair] += 1
 
     return counter"""
+
 
 def decode(ciphertext, key):
     cleartext = ''
@@ -184,6 +185,9 @@ def score(text, ref_bigram):
 
 ###############################################################################
 # Decryption routine
+BestScores = []
+Iterations = []
+
 
 def decrypt():
     # Read the reference text into memory
@@ -250,7 +254,14 @@ def decrypt():
         else:
             last_score_increase += 1
         print(best_score)
-
+        BestScores.append(best_score)
+        Iterations.append(iterations+STABILITY_INTERVALS)
+        plt.plot(Iterations,BestScores)
+        plt.xlabel('generation')
+        plt.ylabel('bestScore')
+        plt.show(block=False)
+        plt.pause(0.05)
+        # plt.close()
         iterations += 1
 
     # Print the current (best) solution
@@ -283,5 +294,6 @@ def decrypt():
     print(decode(ciphertext, population[0]))
     print(population[0])
 
-
+plt.plot(BestScores,Iterations)
 decrypt()
+plt.show()

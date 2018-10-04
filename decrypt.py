@@ -253,10 +253,10 @@ def decrypt():
             last_score = best_score
         else:
             last_score_increase += 1
-        print(best_score)
+        print(iterations+STABILITY_INTERVALS,':',best_score)
         BestScores.append(best_score)
         Iterations.append(iterations+STABILITY_INTERVALS)
-        plt.plot(Iterations,BestScores)
+        plt.plot(Iterations,BestScores,'r')
         plt.xlabel('generation')
         plt.ylabel('bestScore')
         plt.show(block=False)
@@ -290,10 +290,27 @@ def decrypt():
     #         'Z': 'Z',  # Wrong, should be 'G'
     #     }
     #
-    print('Best solution found after {} iterations:'.format(iterations))
-    print(decode(ciphertext, population[0]))
-    print(population[0])
+    print('Best solution found after {} iterations'.format(iterations))
+    print('with population :{}'.format(population[0]))
 
+    return decode(ciphertext, population[0])
+
+
+
+def metrics():
+    AnswerText = decrypt()
+    totalLen = len(AnswerText)
+    accuracyCount = 0
+    with open('plaintext.txt') as original:
+        OriginaText = original.read().upper()
+    for i in range(totalLen):
+        if OriginaText[i]==AnswerText[i]:
+            accuracyCount+=1
+    print('accuracy : {}%'.format(100*accuracyCount/totalLen))
+    
 plt.plot(BestScores,Iterations)
-decrypt()
+metrics()
 plt.show()
+plt.pause(2)
+plt.close()
+
